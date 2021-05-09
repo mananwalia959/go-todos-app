@@ -1,12 +1,22 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Todo struct {
 	Id          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Completed   bool      `json:"completed"`
+	CreatedOn   time.Time `json:"-"`
+}
+
+type TodoCreateRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type Todos []Todo
