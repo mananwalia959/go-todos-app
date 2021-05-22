@@ -43,6 +43,49 @@ func GetSingleTodo(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func EditTodo(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	todoString := vars["todoId"]
+
+	todoId, err := uuid.Parse(todoString)
+	if err != nil {
+		errorResponse(w, 400, "please enter valid uuid")
+		return
+	}
+
+	var editRequest models.TodoEditRequest
+
+	err = json.NewDecoder(r.Body).Decode(&editRequest)
+	if err != nil {
+		errorResponse(w, 400, "Provide valid edit request")
+		return
+	}
+	if len(strings.TrimSpace(editRequest.Name)) == 0 {
+		errorResponse(w, 400, "name must not be empty")
+		return
+	}
+
+	todo, found := todoRepository.GetTodo(todoId)
+	if !found {
+		errorResponse(w, 404, "todo not found")
+		return
+	}
+
+	todo.Name = editRequest.Name
+	todo.Description = editRequest.Description
+	todo.Completed = editRequest.Completed
+
+	todo, err = todoRepository.EditTodo(todo)
+	if err != nil {
+		errorResponse(w, 500, "Something went wrong")
+		return
+	}
+
+	encodeToJson(w, 200, todo)
+
+}
+
 func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var createRequest models.TodoCreateRequest
 	err := json.NewDecoder(r.Body).Decode(&createRequest)

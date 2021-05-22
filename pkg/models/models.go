@@ -19,6 +19,12 @@ type TodoCreateRequest struct {
 	Description string `json:"description"`
 }
 
+type TodoEditRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Completed   bool   `json:"completed"`
+}
+
 type Todos []Todo
 
 type ErrorResponse struct {
