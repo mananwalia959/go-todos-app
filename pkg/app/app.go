@@ -14,10 +14,16 @@ func GetApplication() http.Handler {
 
 	myRouter := mux.NewRouter()
 
-	myRouter.Methods(http.MethodGet).Path("/todos").HandlerFunc(handlers.GetAllTodos)
-	myRouter.Methods(http.MethodPost).Path("/todos").HandlerFunc(handlers.CreateTodo)
-	myRouter.Methods(http.MethodGet).Path("/todos/{todoId}").HandlerFunc(handlers.GetSingleTodo)
-	myRouter.Methods(http.MethodPut).Path("/todos/{todoId}").HandlerFunc(handlers.EditTodo)
+	apiRoutes := myRouter.PathPrefix("/api").Subrouter()
+
+	myRouter.PathPrefix("/").Handler(spaHandler())
+
+	setApiRoutes(apiRoutes)
+
 	return myRouter
 
+}
+
+func spaHandler() http.Handler {
+	return http.FileServer(http.Dir("client/build"))
 }
