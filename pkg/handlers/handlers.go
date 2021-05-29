@@ -108,6 +108,10 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 	encodeToJson(w, 200, savedTodo)
 }
 
+func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
+	errorResponse(w, 404, "Path Not Found")
+}
+
 func encodeToJson(w http.ResponseWriter, status int, jsonInterface interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)

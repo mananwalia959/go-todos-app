@@ -13,5 +13,6 @@ func setApiRoutes(apiRoutes *mux.Router) {
 	apiRoutes.Methods(http.MethodPost).Path("/todos").HandlerFunc(handlers.CreateTodo)
 	apiRoutes.Methods(http.MethodGet).Path("/todos/{todoId}").HandlerFunc(handlers.GetSingleTodo)
 	apiRoutes.Methods(http.MethodPut).Path("/todos/{todoId}").HandlerFunc(handlers.EditTodo)
+	apiRoutes.NotFoundHandler = http.HandlerFunc(handlers.NotFoundHandler)
 
 }
