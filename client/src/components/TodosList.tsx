@@ -1,8 +1,9 @@
 import { Button } from '@chakra-ui/button';
-import { Center, Flex, Spacer, Text } from '@chakra-ui/layout';
+import { Center, Flex, Grid, Spacer, Text } from '@chakra-ui/layout';
 import { useEffect, useState } from 'react';
 import { Todo } from '../models/todos';
 import { todoService } from '../services/todos-service';
+import TodoComponent from './TodoComponent';
 
 function TodosList() {
     const [todos, setTodos] = useState([] as Todo[]);
@@ -25,10 +26,11 @@ function TodosList() {
                     Add todo
                 </Button>
             </Flex>
-
-            {todos.map((todo) => (
-                <p id={todo.id}> {todo.name} </p>
-            ))}
+            <Grid direction="column" gridAutoRows="1fr" gap="2" mt="2">
+                {todos.map((t) => (
+                    <TodoComponent key={t.id} todo={t} />
+                ))}
+            </Grid>
         </>
     );
 }
