@@ -1,12 +1,15 @@
 import { Button } from '@chakra-ui/button';
+import { useDisclosure } from '@chakra-ui/hooks';
 import { Center, Flex, Grid, Spacer, Text } from '@chakra-ui/layout';
 import { useEffect, useState } from 'react';
 import { Todo } from '../models/todos';
 import { todoService } from '../services/todos-service';
+import TodoModalDialog from './TodoModalDialog';
 import TodoComponent from './TodoComponent';
 
 function TodosList() {
     const [todos, setTodos] = useState([] as Todo[]);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {
         todoService
@@ -17,12 +20,14 @@ function TodosList() {
 
     return (
         <>
+            <TodoModalDialog isOpen={isOpen} onClose={onClose} />
+
             <Flex p="3">
                 <Center>
                     <Text fontSize="lg"> All Todos </Text>
                 </Center>
                 <Spacer />
-                <Button ml="2" colorScheme="teal">
+                <Button onClick={onOpen} ml="2" colorScheme="teal">
                     Add todo
                 </Button>
             </Flex>

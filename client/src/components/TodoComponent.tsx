@@ -1,11 +1,14 @@
 import { IconButton } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
+import { useDisclosure } from '@chakra-ui/hooks';
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/layout';
 import { FC } from 'react';
 import { Todo } from '../models/todos';
+import TodoModalDialog from './TodoModalDialog';
 import { EditIcon } from './svg/EditIcon';
 
 const TodoComponent: FC<{ todo: Todo }> = (props) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const todo: Todo = props.todo;
     return (
         <>
@@ -30,6 +33,7 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                         />
 
                         <IconButton
+                            onClick={onOpen}
                             variant="link"
                             colorScheme="teal"
                             aria-label="Edit Todo"
@@ -38,6 +42,8 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                         />
                     </Flex>
                 </Flex>
+
+                <TodoModalDialog isOpen={isOpen} onClose={onClose} />
 
                 {todo.description ? (
                     <Text isTruncated>{todo.description} </Text>
