@@ -12,13 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install dependencies and Build React App
+      working-directory: ./client
+      run: |
+        npm ci
+        npm run build 
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.16
 
-    - name: Build
+    - name: Build Golang App
       run: go build -v ./cmd/web/...
 
     - name: Test
