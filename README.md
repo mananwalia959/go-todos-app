@@ -1,7 +1,7 @@
 # go-todos-app
 
 ## Description
-Simple Rest APi example for Golang
+Simple Web App for Golang and React
 
 ## Pipelines
 
