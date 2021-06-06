@@ -11,7 +11,7 @@ import {
     ModalOverlay,
 } from '@chakra-ui/modal';
 import { Textarea } from '@chakra-ui/textarea';
-import { cleanup } from '@testing-library/react';
+
 import React, { FC, useState } from 'react';
 import { Todo } from '../models/Todo';
 import { TodoCreateRequest } from '../models/TodoCreateRequest';
@@ -30,12 +30,12 @@ const TodoModalDialog: FC<{
     const [todoName, setTodoName] = useState('');
     const [todoDescription, setTodoDescription] = useState('');
 
-    const cleanup = () => {
+    const onCloseDialog = () => {
         setTodoName('');
         setTodoDescription('');
         setClicked(false);
+        onClose();
     };
-
     const onSaveButton = async () => {
         setClicked(true);
         if (todoName.trim() === '') return;
@@ -48,13 +48,12 @@ const TodoModalDialog: FC<{
             const newTodo = await todoService.saveNewTodo(newRequest);
             onSave !== undefined && onSave(newTodo);
         }
-        cleanup();
-        onClose();
+        onCloseDialog();
     };
 
     return (
         <>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onCloseDialog}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Todo</ModalHeader>
@@ -85,7 +84,7 @@ const TodoModalDialog: FC<{
                             variant="outline"
                             colorScheme="teal"
                             mr={3}
-                            onClick={onClose}
+                            onClick={onCloseDialog}
                         >
                             Close
                         </Button>
