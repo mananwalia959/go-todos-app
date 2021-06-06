@@ -29,7 +29,6 @@ function TodosList() {
                 isOpen={isOpen}
                 onClose={onClose}
                 onSave={onNewTodo}
-                isNewTodo={true}
             />
 
             <Flex p="3">

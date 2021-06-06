@@ -12,30 +12,37 @@ import {
 } from '@chakra-ui/modal';
 import { Textarea } from '@chakra-ui/textarea';
 
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Todo } from '../models/Todo';
 import { TodoCreateRequest } from '../models/TodoCreateRequest';
+import { TodoEditRequest } from '../models/TodoEditRequest';
 import { todoService } from '../services/todos-service';
 
 const TodoModalDialog: FC<{
     isOpen: boolean;
     onClose: () => void;
     todo?: Todo;
-    onSave?: (todo: Todo) => void;
-    isNewTodo?: boolean;
+    onSave: (todo: Todo) => void;
 }> = (props) => {
     const { isOpen, onClose } = props;
-    const { isNewTodo, onSave } = props;
+    const { onSave } = props;
     const [isClicked, setClicked] = useState(false);
     const [todoName, setTodoName] = useState('');
     const [todoDescription, setTodoDescription] = useState('');
+    const isNewTodo = props.todo ? false : true;
+    const todo: Todo = props.todo ? props.todo : ({} as Todo);
 
-    const onCloseDialog = () => {
-        setTodoName('');
-        setTodoDescription('');
+    useEffect(() => {
+        if (isNewTodo) {
+            setTodoName('');
+            setTodoDescription('');
+        } else {
+            setTodoName(todo.name);
+            setTodoDescription(todo.description);
+        }
         setClicked(false);
-        onClose();
-    };
+    }, [isOpen, isNewTodo, todo.description, todo.name]);
+
     const onSaveButton = async () => {
         setClicked(true);
         if (todoName.trim() === '') return;
@@ -46,14 +53,23 @@ const TodoModalDialog: FC<{
                 description: todoDescription,
             };
             const newTodo = await todoService.saveNewTodo(newRequest);
-            onSave !== undefined && onSave(newTodo);
+            onSave(newTodo);
+        } else {
+            const newRequest: TodoEditRequest = {
+                name: todoName,
+                description: todoDescription,
+                completed: todo.completed,
+            };
+
+            const newTodo = await todoService.editTodo(todo.id, newRequest);
+            onSave(newTodo);
         }
-        onCloseDialog();
+        onClose();
     };
 
     return (
         <>
-            <Modal isOpen={isOpen} onClose={onCloseDialog}>
+            <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Todo</ModalHeader>
@@ -84,7 +100,7 @@ const TodoModalDialog: FC<{
                             variant="outline"
                             colorScheme="teal"
                             mr={3}
-                            onClick={onCloseDialog}
+                            onClick={onClose}
                         >
                             Close
                         </Button>

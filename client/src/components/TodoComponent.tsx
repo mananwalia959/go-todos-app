@@ -2,14 +2,37 @@ import { IconButton } from '@chakra-ui/button';
 import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/layout';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Todo } from '../models/Todo';
 import TodoModalDialog from './TodoModalDialog';
 import { EditIcon } from './svg/EditIcon';
+import { todoService } from '../services/todos-service';
+import { TodoEditRequest } from '../models/TodoEditRequest';
 
 const TodoComponent: FC<{ todo: Todo }> = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const todo: Todo = props.todo;
+    const [todo, setTodo] = useState(props.todo);
+    const editTodo = (newTodo: Todo) => {
+        setTodo({ ...newTodo });
+    };
+
+    const onCheckbox = async (isChecked: boolean) => {
+        todo.completed = isChecked;
+
+        // do this a bit early in case of latency so checkbox is checked before response
+        // setchecked(todo.completed);
+        setTodo({ ...todo, completed: isChecked });
+
+        const newRequest: TodoEditRequest = {
+            name: todo.name,
+            description: todo.description,
+            completed: isChecked,
+        };
+
+        const newTodo = await todoService.editTodo(todo.id, newRequest);
+        setTodo({ ...newTodo });
+    };
+
     return (
         <>
             <Box
@@ -30,6 +53,8 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                             size="lg"
                             mx="2"
                             borderColor="teal"
+                            isChecked={todo.completed}
+                            onChange={(e) => onCheckbox(e.target.checked)}
                         />
 
                         <IconButton
@@ -43,7 +68,12 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                     </Flex>
                 </Flex>
 
-                <TodoModalDialog isOpen={isOpen} onClose={onClose} />
+                <TodoModalDialog
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    todo={todo}
+                    onSave={editTodo}
+                />
 
                 {todo.description ? (
                     <Text isTruncated>{todo.description} </Text>
