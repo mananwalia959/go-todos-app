@@ -3,7 +3,7 @@ import { Checkbox } from '@chakra-ui/checkbox';
 import { useDisclosure } from '@chakra-ui/hooks';
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/layout';
 import { FC } from 'react';
-import { Todo } from '../models/todos';
+import { Todo } from '../models/Todo';
 import TodoModalDialog from './TodoModalDialog';
 import { EditIcon } from './svg/EditIcon';
 

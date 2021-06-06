@@ -51,10 +51,11 @@ func (repo *localStorageTodoRepository) EditTodo(todo models.Todo) (models.Todo,
 			return todo, nil
 		}
 	}
-	return models.Todo{}, errors.New("Todo to be edited not found , make sure AddTodo was called before edit")
+	return models.Todo{}, errors.New("todo to be edited not found , make sure AddTodo was called before edit")
 }
 
 func (repo *localStorageTodoRepository) AddTodo(todo models.Todo) models.Todo {
-	repo.todos = append(repo.todos, todo)
+	//prepend the todos at top of slice
+	repo.todos = append([]models.Todo{todo}, repo.todos...)
 	return todo
 }
