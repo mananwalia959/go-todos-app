@@ -12,18 +12,20 @@ import (
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
-var todoRepository repository.TodoRepository
-
-func InitialzeHandlers(todorepo repository.TodoRepository) {
-	todoRepository = todorepo
+func InitialzeTodoHandlers(todorepo repository.TodoRepository) TodosHandler {
+	return TodosHandler{todoRepository: todorepo}
 }
 
-func GetAllTodos(w http.ResponseWriter, r *http.Request) {
-	allTodos := todoRepository.GetAllTodos()
+type TodosHandler struct {
+	todoRepository repository.TodoRepository
+}
+
+func (handler TodosHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
+	allTodos := handler.todoRepository.GetAllTodos()
 	encodeToJson(w, 200, allTodos)
 }
 
-func GetSingleTodo(w http.ResponseWriter, r *http.Request) {
+func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	todoString := vars["todoId"]
@@ -34,7 +36,7 @@ func GetSingleTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, found := todoRepository.GetTodo(todoId)
+	todo, found := handler.todoRepository.GetTodo(todoId)
 	if !found {
 		errorResponse(w, 404, "todo not found")
 		return
@@ -43,7 +45,7 @@ func GetSingleTodo(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func EditTodo(w http.ResponseWriter, r *http.Request) {
+func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	todoString := vars["todoId"]
@@ -66,7 +68,7 @@ func EditTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, found := todoRepository.GetTodo(todoId)
+	todo, found := handler.todoRepository.GetTodo(todoId)
 	if !found {
 		errorResponse(w, 404, "todo not found")
 		return
@@ -76,7 +78,7 @@ func EditTodo(w http.ResponseWriter, r *http.Request) {
 	todo.Description = editRequest.Description
 	todo.Completed = editRequest.Completed
 
-	todo, err = todoRepository.EditTodo(todo)
+	todo, err = handler.todoRepository.EditTodo(todo)
 	if err != nil {
 		errorResponse(w, 500, "Something went wrong")
 		return
@@ -86,7 +88,7 @@ func EditTodo(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateTodo(w http.ResponseWriter, r *http.Request) {
+func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var createRequest models.TodoCreateRequest
 	err := json.NewDecoder(r.Body).Decode(&createRequest)
 	if err != nil {
@@ -104,7 +106,7 @@ func CreateTodo(w http.ResponseWriter, r *http.Request) {
 		Completed:   false,
 		CreatedOn:   time.Now(),
 	}
-	savedTodo := todoRepository.AddTodo(todo)
+	savedTodo := handler.todoRepository.AddTodo(todo)
 	encodeToJson(w, 200, savedTodo)
 }
 

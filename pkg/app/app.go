@@ -4,21 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/mananwalia959/go-todos-app/pkg/handlers"
+	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
-func GetApplication() http.Handler {
+func GetApplication(appconfig config.Appconfig) http.Handler {
 
-	handlers.InitialzeHandlers(repository.GetTodoRepository())
+	todoRepo := repository.GetTodoRepository()
 
 	myRouter := mux.NewRouter()
 
 	apiRoutes := myRouter.PathPrefix("/api").Subrouter()
+	setApiRoutes(apiRoutes, todoRepo, appconfig)
 
 	myRouter.PathPrefix("/").Handler(spaHandler())
-
-	setApiRoutes(apiRoutes)
 
 	return myRouter
 

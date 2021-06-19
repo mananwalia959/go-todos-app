@@ -30,3 +30,7 @@ type Todos []Todo
 type ErrorResponse struct {
 	Message string `json:"message"`
 }
+
+type TokenRequest struct {
+	Code string `json:"code"`
+}
