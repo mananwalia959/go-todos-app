@@ -35,6 +35,5 @@ func getConfig() config.Appconfig {
 		log.Fatal("exiting : client secret is not present")
 	}
 
-	// 765874532491-6lr571h6anapg0uaufue3gvlpuvb6388.apps.googleusercontent.com
 	return config.Appconfig{OauthClientId: clientID, OauthClientSecret: clientSecret}
 }
