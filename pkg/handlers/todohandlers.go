@@ -109,20 +109,3 @@ func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	savedTodo := handler.todoRepository.AddTodo(todo)
 	encodeToJson(w, 200, savedTodo)
 }
-
-func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
-	errorResponse(w, 404, "Path Not Found")
-}
-
-func encodeToJson(w http.ResponseWriter, status int, jsonInterface interface{}) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(jsonInterface)
-}
-
-func errorResponse(w http.ResponseWriter, status int, message string) {
-	errorMessage := models.ErrorResponse{Message: message}
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(errorMessage)
-}
