@@ -70,33 +70,33 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 	encodeToJson(w, 200, profile)
 }
 
-func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Profile, error) {
+func getProfileFromOauthApi(accessToken string, client *http.Client) (models.GoogleProfileInfo, error) {
 	url := "https://www.googleapis.com/oauth2/v1/userinfo"
 
 	method := http.MethodGet
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		return models.Profile{}, err
+		return models.GoogleProfileInfo{}, err
 	}
 	req.Header.Add("Authorization", "Bearer "+accessToken)
 
 	res, err := client.Do(req)
 	if err != nil {
-		return models.Profile{}, err
+		return models.GoogleProfileInfo{}, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return models.Profile{}, err
+		return models.GoogleProfileInfo{}, err
 	}
 
-	profile := models.Profile{}
-	err = json.NewDecoder(res.Body).Decode(&profile)
+	googleProfileInfo := models.GoogleProfileInfo{}
+	err = json.NewDecoder(res.Body).Decode(&googleProfileInfo)
 	if err != nil {
-		return models.Profile{}, err
+		return models.GoogleProfileInfo{}, err
 	}
 
-	return profile, nil
+	return googleProfileInfo, nil
 }
 
 func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqGoogle) (models.AccessTokenRespGoogle, error) {
