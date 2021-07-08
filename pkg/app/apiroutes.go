@@ -7,13 +7,19 @@ import (
 
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/handlers"
+	"github.com/mananwalia959/go-todos-app/pkg/oauth"
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
-func setApiRoutes(apiRoutes *mux.Router, todorepo repository.TodoRepository, appconfig config.Appconfig) {
+func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 
-	todoHandler := handlers.InitialzeTodoHandlers(todorepo)
-	authHandler := handlers.InitializeAuthHandlers(appconfig)
+	todoRepo := repository.InitializeTodoRepository()
+	userRepo := repository.InitializeUserRepository()
+
+	jwtUtil := oauth.InitializeJwtUtil(appconfig)
+
+	todoHandler := handlers.InitialzeTodoHandlers(todoRepo)
+	authHandler := handlers.InitializeAuthHandlers(appconfig, userRepo, jwtUtil)
 
 	unProtectedRoutes := apiRoutes.NewRoute().Subrouter()
 

@@ -6,6 +6,10 @@ type TokenRequest struct {
 	Code string `json:"code"`
 }
 
+type TokenResponse struct {
+	JwtToken string `json:"jwtToken"`
+}
+
 type AccessTokenRespGoogle struct {
 	AccessToken string `json:"access_token"`
 }

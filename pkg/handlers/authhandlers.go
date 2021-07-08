@@ -3,21 +3,34 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/models"
+	"github.com/mananwalia959/go-todos-app/pkg/oauth"
+	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
-func InitializeAuthHandlers(appconfig config.Appconfig) AuthHandler {
-	return AuthHandler{clientId: appconfig.OauthClientId, clientSecret: appconfig.OauthClientSecret, client: &http.Client{}}
+func InitializeAuthHandlers(appconfig config.Appconfig, userRepository repository.UserRepository, jwtutil oauth.JWTUtil) AuthHandler {
+	return AuthHandler{
+		clientId:       appconfig.OauthClientId,
+		clientSecret:   appconfig.OauthClientSecret,
+		client:         &http.Client{},
+		redirectUrl:    appconfig.OauthRedirectUrl,
+		userRepository: userRepository,
+		jwtutil:        jwtutil,
+	}
 }
 
 type AuthHandler struct {
-	clientId     string
-	clientSecret string
-	client       *http.Client
+	clientId       string
+	clientSecret   string
+	client         *http.Client
+	redirectUrl    string
+	userRepository repository.UserRepository
+	jwtutil        oauth.JWTUtil
 }
 
 func (authHandler AuthHandler) GetLoginUrl(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +39,7 @@ func (authHandler AuthHandler) GetLoginUrl(w http.ResponseWriter, r *http.Reques
 	q := parsed.Query()
 
 	q.Add("client_id", authHandler.clientId)
-	q.Add("redirect_uri", "http://localhost:3000/callback/googleoauth")
+	q.Add("redirect_uri", authHandler.redirectUrl)
 	q.Add("response_type", "code")
 	q.Add("scope", "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
 	q.Add("state", "randomstring") //will be made random later
@@ -67,9 +80,24 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	encodeToJson(w, 200, profile)
+	userprincipal, err := authHandler.userRepository.FindOrCreateUser(profile)
+	if err != nil {
+		errorResponse(w, 500, "something went wrong")
+		return
+	}
+
+	token, err := authHandler.jwtutil.SignToken(userprincipal)
+	if err != nil {
+		errorResponse(w, 500, "something went wrong")
+		return
+	}
+
+	response := models.TokenResponse{JwtToken: token}
+
+	encodeToJson(w, 200, response)
 }
 
+// Utilities
 func getProfileFromOauthApi(accessToken string, client *http.Client) (models.GoogleProfileInfo, error) {
 	url := "https://www.googleapis.com/oauth2/v1/userinfo"
 
@@ -87,7 +115,7 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		return models.GoogleProfileInfo{}, err
+		return models.GoogleProfileInfo{}, errors.New("could not get profile data")
 	}
 
 	googleProfileInfo := models.GoogleProfileInfo{}

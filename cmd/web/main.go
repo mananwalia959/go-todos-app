@@ -35,5 +35,15 @@ func getConfig() config.Appconfig {
 		log.Fatal("exiting : client secret is not present")
 	}
 
-	return config.Appconfig{OauthClientId: clientID, OauthClientSecret: clientSecret}
+	redirectUrl, redirectUrlPresent := os.LookupEnv("REDIRECT_URL")
+	if !redirectUrlPresent {
+		log.Fatal("exiting : redirect url is not present")
+	}
+
+	secretKeyJwt, secretKeyJwtPresent := os.LookupEnv("SECRET_KEY_JWT")
+	if !secretKeyJwtPresent {
+		log.Fatal("exiting : secretKeyJwt is not present")
+	}
+
+	return config.Appconfig{OauthClientId: clientID, OauthClientSecret: clientSecret, OauthRedirectUrl: redirectUrl, SecretKeyJwt: secretKeyJwt}
 }

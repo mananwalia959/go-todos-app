@@ -19,7 +19,7 @@ type localStorageTodoRepository struct {
 	todos models.Todos
 }
 
-func GetTodoRepository() TodoRepository {
+func InitializeTodoRepository() TodoRepository {
 
 	defaultTodos := models.Todos{
 		models.Todo{Id: uuid.MustParse("f6dd9451-ce63-40e6-af3c-66c4d5b4495d"), Name: "Yes", Completed: false, CreatedOn: time.Now()},

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/models"
 	"github.com/pascaldekloe/jwt"
 )
@@ -13,6 +14,10 @@ import (
 type JWTUtil interface {
 	VerifySign(string) (models.UserPrincipal, error)
 	SignToken(models.UserPrincipal) (string, error)
+}
+
+func InitializeJwtUtil(appconfig config.Appconfig) JWTUtil {
+	return &JWTUtilImpl{secret: []byte(appconfig.SecretKeyJwt)}
 }
 
 type JWTUtilImpl struct {
