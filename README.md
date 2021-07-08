@@ -15,3 +15,9 @@ Simple Web App for Golang and React
 |---| --- | --- |
 | OAUTH_CLIENT_ID_GOOGLE | your google oauth panel , refer [here](https://developers.google.com/identity/protocols/oauth2/web-server)  | For Our Google Sign in Functionality |
 | OAUTH_CLIENT_SECRET_GOOGLE | your google oauth panel , refer [here](https://developers.google.com/identity/protocols/oauth2/web-server)  | For Our Google Sign in Functionality |
+| REDIRECT_URL | your callback url , just use your ui url + '/callback/googleoauth', for ex: http://localhost:3000/callback/googleoauth  | For Our Google Sign in Functionality |
+| SECRET_KEY_JWT | a random string (preferably long and diificult to guess)  | For Signing and verifying our jwt tokens |
+
+
+
+
