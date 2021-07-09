@@ -34,3 +34,5 @@ type UserPrincipal struct {
 	Name    string    `json:"name"`
 	Picture string    `json:"picture"`
 }
+
+type UserPrincipalCtxKey string

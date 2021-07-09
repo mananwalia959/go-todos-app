@@ -27,6 +27,7 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 	unProtectedRoutes.Methods(http.MethodPost).Path("/auth/token/google").HandlerFunc(authHandler.GetToken)
 
 	protectedRoutes := apiRoutes.NewRoute().Subrouter()
+	protectedRoutes.Use(handlers.GetAuthMiddleWare(jwtUtil))
 
 	protectedRoutes.Methods(http.MethodGet).Path("/todos").HandlerFunc(todoHandler.GetAllTodos)
 	protectedRoutes.Methods(http.MethodPost).Path("/todos").HandlerFunc(todoHandler.CreateTodo)
