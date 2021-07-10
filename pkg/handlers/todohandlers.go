@@ -32,13 +32,13 @@ func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request
 
 	todoId, err := uuid.Parse(todoString)
 	if err != nil {
-		errorResponse(w, 400, "please enter valid uuid")
+		ErrorResponse(w, 400, "please enter valid uuid")
 		return
 	}
 
 	todo, found := handler.todoRepository.GetTodo(todoId)
 	if !found {
-		errorResponse(w, 404, "todo not found")
+		ErrorResponse(w, 404, "todo not found")
 		return
 	}
 	encodeToJson(w, 200, todo)
@@ -52,7 +52,7 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 
 	todoId, err := uuid.Parse(todoString)
 	if err != nil {
-		errorResponse(w, 400, "please enter valid uuid")
+		ErrorResponse(w, 400, "please enter valid uuid")
 		return
 	}
 
@@ -60,17 +60,17 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&editRequest)
 	if err != nil {
-		errorResponse(w, 400, "Provide valid edit request")
+		ErrorResponse(w, 400, "Provide valid edit request")
 		return
 	}
 	if len(strings.TrimSpace(editRequest.Name)) == 0 {
-		errorResponse(w, 400, "name must not be empty")
+		ErrorResponse(w, 400, "name must not be empty")
 		return
 	}
 
 	todo, found := handler.todoRepository.GetTodo(todoId)
 	if !found {
-		errorResponse(w, 404, "todo not found")
+		ErrorResponse(w, 404, "todo not found")
 		return
 	}
 
@@ -80,7 +80,7 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 
 	todo, err = handler.todoRepository.EditTodo(todo)
 	if err != nil {
-		errorResponse(w, 500, "Something went wrong")
+		ErrorResponse(w, 500, "Something went wrong")
 		return
 	}
 
@@ -92,11 +92,11 @@ func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	var createRequest models.TodoCreateRequest
 	err := json.NewDecoder(r.Body).Decode(&createRequest)
 	if err != nil {
-		errorResponse(w, 400, "Provide valid create request")
+		ErrorResponse(w, 400, "Provide valid create request")
 		return
 	}
 	if len(strings.TrimSpace(createRequest.Name)) == 0 {
-		errorResponse(w, 400, "name must not be empty")
+		ErrorResponse(w, 400, "name must not be empty")
 		return
 	}
 	todo := models.Todo{

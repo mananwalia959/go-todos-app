@@ -56,7 +56,7 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 	Code := tokenRequest.Code
 
 	if err != nil {
-		errorResponse(w, 400, "please provide valid token request")
+		ErrorResponse(w, 400, "please provide valid token request")
 		return
 	}
 
@@ -70,25 +70,25 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 	accessTokenReponse, err := getAccessTokenFromCode(authHandler.client, accessTokenRequest)
 
 	if err != nil {
-		errorResponse(w, 500, "something went wrong")
+		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	profile, err := getProfileFromOauthApi(accessTokenReponse.AccessToken, authHandler.client)
 	if err != nil {
-		errorResponse(w, 500, "something went wrong")
+		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	userprincipal, err := authHandler.userRepository.FindOrCreateUser(profile)
 	if err != nil {
-		errorResponse(w, 500, "something went wrong")
+		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	token, err := authHandler.jwtutil.SignToken(userprincipal)
 	if err != nil {
-		errorResponse(w, 500, "something went wrong")
+		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 

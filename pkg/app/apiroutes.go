@@ -7,11 +7,14 @@ import (
 
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/handlers"
+	"github.com/mananwalia959/go-todos-app/pkg/handlers/middlewares"
 	"github.com/mananwalia959/go-todos-app/pkg/oauth"
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
 func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
+
+	apiRoutes.Use(middlewares.PanicRecovermiddleWare)
 
 	todoRepo := repository.InitializeTodoRepository()
 	userRepo := repository.InitializeUserRepository()
@@ -27,7 +30,7 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 	unProtectedRoutes.Methods(http.MethodPost).Path("/auth/token/google").HandlerFunc(authHandler.GetToken)
 
 	protectedRoutes := apiRoutes.NewRoute().Subrouter()
-	protectedRoutes.Use(handlers.GetAuthMiddleWare(jwtUtil))
+	protectedRoutes.Use(middlewares.GetAuthMiddleWare(jwtUtil))
 
 	protectedRoutes.Methods(http.MethodGet).Path("/todos").HandlerFunc(todoHandler.GetAllTodos)
 	protectedRoutes.Methods(http.MethodPost).Path("/todos").HandlerFunc(todoHandler.CreateTodo)
