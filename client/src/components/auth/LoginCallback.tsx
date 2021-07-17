@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { authService } from '../../services/auth-service';
 import { Text, Stack, Square } from '@chakra-ui/react';
 import AuthContext from '../../contexts/AuthContext';
@@ -11,19 +11,25 @@ const LoginCallback: FC<{ location: Location }> = (props) => {
     const queryParams = new URLSearchParams(props.location.search);
     const code: string = queryParams.get('code') || ''; //return empty if not present
     const authContext = useContext(AuthContext);
+    // temporary workaround
+    const [renderedOnce, setRenderOnce] = useState(false);
 
     useEffect(() => {
-        authService
-            .getToken(code)
-            .then((res) => {
-                const token = res.jwtToken;
-                console.log(token);
-                authContext.setToken(token);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [code]);
+        if (!renderedOnce) {
+            authService
+                .getToken(code)
+                .then((res) => {
+                    setRenderOnce(true);
+                    const token = res.jwtToken;
+                    console.log(token);
+                    authContext.setToken(token);
+                })
+                .catch((err) => {
+                    setRenderOnce(true);
+                    console.log(err);
+                });
+        }
+    }, [code, renderedOnce, authContext]);
     return (
         <>
             <Stack align="center">
