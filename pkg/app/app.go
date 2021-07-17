@@ -21,5 +21,8 @@ func GetApplication(appconfig config.Appconfig) http.Handler {
 }
 
 func spaHandler() http.Handler {
-	return http.FileServer(http.Dir("client/build"))
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./client/build/index.html")
+	})
+
 }

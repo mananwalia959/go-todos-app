@@ -46,7 +46,7 @@ func (authHandler AuthHandler) GetLoginUrl(w http.ResponseWriter, r *http.Reques
 
 	parsed.RawQuery = q.Encode()
 
-	http.Redirect(w, r, parsed.String(), http.StatusTemporaryRedirect)
+	http.Redirect(w, r, parsed.String(), http.StatusOK)
 
 }
 

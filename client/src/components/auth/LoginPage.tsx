@@ -1,8 +1,10 @@
 import { Button, Stack, Square, Heading } from '@chakra-ui/react';
 import { GoogleIcon } from './../svg/GoogleIcon';
 import React from 'react';
+import { authService } from '../../services/auth-service';
 
 const LoginPage = () => {
+    const onLoginClick = () => authService.getOauthUrl();
     return (
         <Stack align="center">
             <Heading as="h4" size="md" color="teal">
@@ -16,6 +18,7 @@ const LoginPage = () => {
                 bgColor="gray.100"
             >
                 <Button
+                    onClick={onLoginClick}
                     leftIcon={<GoogleIcon />}
                     colorScheme="teal"
                     variant="outline"
