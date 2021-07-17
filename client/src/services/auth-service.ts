@@ -1,9 +1,11 @@
+import { UserPrincipal } from './../models/auth/UserPrincipal';
 import { TokenResponse } from './../models/auth/TokenResponse';
 import  axios  from 'axios';
 
 interface AuthService{
     getToken(code :string): Promise<TokenResponse>
     getOauthUrl(): Promise<any>
+    tokenToUserPrincipal(token:string): UserPrincipal
 }
 
 class AuthServiceImpl implements AuthService {
@@ -12,10 +14,12 @@ class AuthServiceImpl implements AuthService {
     }
 
     getOauthUrl(): Promise<any> {
-        return axios.get<OauthResponse>('/api/auth/loginurl/google', {headers :
-             {'Accept': 'application/json',
-             'Content-Type': 'application/json'}
-            }).then(res => window.location.href = (res.headers.location));
+        return axios.get<OauthResponse>('/api/auth/loginurl/google')
+            .then(res => window.location.href = (res.headers.location));
+    }
+
+    tokenToUserPrincipal(token:string): UserPrincipal {
+        return {} as UserPrincipal
     }
 }
 

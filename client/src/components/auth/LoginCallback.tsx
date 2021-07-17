@@ -1,6 +1,7 @@
-import { FC, useEffect } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { authService } from '../../services/auth-service';
 import { Text, Stack, Square } from '@chakra-ui/react';
+import AuthContext from '../../contexts/AuthContext';
 
 type Location = {
     search: string;
@@ -9,11 +10,15 @@ type Location = {
 const LoginCallback: FC<{ location: Location }> = (props) => {
     const queryParams = new URLSearchParams(props.location.search);
     const code: string = queryParams.get('code') || ''; //return empty if not present
+    const authContext = useContext(AuthContext);
+
     useEffect(() => {
         authService
             .getToken(code)
             .then((res) => {
-                console.log(res.jwtToken);
+                const token = res.jwtToken;
+                console.log(token);
+                authContext.setToken(token);
             })
             .catch((err) => {
                 console.log(err);
