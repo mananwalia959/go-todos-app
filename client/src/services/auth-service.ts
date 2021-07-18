@@ -1,6 +1,7 @@
 import { UserPrincipal } from './../models/auth/UserPrincipal';
 import { TokenResponse } from './../models/auth/TokenResponse';
 import  axios  from 'axios';
+import jwtDecode from 'jwt-decode';
 
 interface AuthService{
     getToken(code :string): Promise<TokenResponse>
@@ -19,7 +20,7 @@ class AuthServiceImpl implements AuthService {
     }
 
     tokenToUserPrincipal(token:string): UserPrincipal {
-        return {} as UserPrincipal
+        return token ? jwtDecode(token) :{} as UserPrincipal
     }
 }
 
