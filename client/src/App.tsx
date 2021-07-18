@@ -6,14 +6,17 @@ import LoginCallback from './components/auth/LoginCallback';
 import LoginPage from './components/auth/LoginPage';
 import AuthContext from './contexts/AuthContext';
 import { useState } from 'react';
-import { UserPrincipal } from './models/auth/UserPrincipal';
 import { authService } from './services/auth-service';
+import StorageService from './services/StorageService';
 
 function App() {
-    const [token, setToken] = useState('');
-    const [userPrincipal, setUserPrincipal] = useState({} as UserPrincipal);
+    const [token, setToken] = useState(StorageService.getToken() || '');
+    const [userPrincipal, setUserPrincipal] = useState(
+        authService.tokenToUserPrincipal(token)
+    );
 
     const setTokenAndUserPrincipal = (tkn: string) => {
+        StorageService.setToken(tkn);
         setToken(tkn);
         setUserPrincipal(authService.tokenToUserPrincipal(tkn));
     };

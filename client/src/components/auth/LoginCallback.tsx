@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useState } from 'react';
 import { authService } from '../../services/auth-service';
 import { Text, Stack, Square } from '@chakra-ui/react';
 import AuthContext from '../../contexts/AuthContext';
+import { Redirect } from 'react-router-dom';
 
 type Location = {
     search: string;
@@ -16,22 +17,22 @@ const LoginCallback: FC<{ location: Location }> = (props) => {
 
     useEffect(() => {
         if (!renderedOnce) {
+            setRenderOnce(true);
             authService
                 .getToken(code)
                 .then((res) => {
-                    setRenderOnce(true);
                     const token = res.jwtToken;
-                    console.log(token);
                     authContext.setToken(token);
                 })
                 .catch((err) => {
-                    setRenderOnce(true);
                     console.log(err);
                 });
         }
     }, [code, renderedOnce, authContext]);
     return (
         <>
+            {authContext.token ? <Redirect to="/" /> : ''}
+
             <Stack align="center">
                 <Square
                     size="xs"

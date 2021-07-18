@@ -1,8 +1,8 @@
 
-import axios from "axios";
 import { Todo } from "../models/Todo";
 import { TodoCreateRequest } from "../models/TodoCreateRequest";
 import { TodoEditRequest } from "../models/TodoEditRequest";
+import ProtectedAxios from "./axios/ProtectedAxios";
 
 interface TodosService{
     getAllTodos(): Promise<Todo[]>
@@ -12,13 +12,13 @@ interface TodosService{
 
 class TodosServiceImpl implements TodosService{
     getAllTodos(): Promise<Todo[]>{
-        return axios.get<Todo[]>(`/api/todos`).then(resp => resp.data)
+        return ProtectedAxios.get<Todo[]>(`/api/todos`).then(resp => resp.data)
     }
     saveNewTodo(todoCreateRequest : TodoCreateRequest): Promise<Todo> {
-        return axios.post<Todo>(`/api/todos`,todoCreateRequest).then(resp => resp.data);
+        return ProtectedAxios.post<Todo>(`/api/todos`,todoCreateRequest).then(resp => resp.data);
     }
     editTodo(todoId :string ,todoEditRequest: TodoEditRequest): Promise<Todo> {
-        return axios.put<Todo>(`/api/todos/${todoId}`,todoEditRequest).then(resp => resp.data);
+        return ProtectedAxios.put<Todo>(`/api/todos/${todoId}`,todoEditRequest).then(resp => resp.data);
     }
 }
 
