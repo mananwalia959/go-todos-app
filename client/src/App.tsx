@@ -8,6 +8,7 @@ import AuthContext from './contexts/AuthContext';
 import { useState } from 'react';
 import { authService } from './services/auth-service';
 import StorageService from './services/StorageService';
+import ProtectedRoute from './routing/ProtectedRoutes';
 
 function App() {
     const [token, setToken] = useState(StorageService.getToken() || '');
@@ -33,8 +34,7 @@ function App() {
                 <AppHeader />
                 <Container maxW="container.md" p="2">
                     <Switch>
-                        <Route path="/" exact component={TodosList} />
-
+                        <ProtectedRoute path="/" exact component={TodosList} />
                         <Route path="/login" exact component={LoginPage} />
 
                         <Route
