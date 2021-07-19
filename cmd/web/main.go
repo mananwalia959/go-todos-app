@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	app "github.com/mananwalia959/go-todos-app/pkg/app"
+	"github.com/mananwalia959/go-todos-app/pkg/app"
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 )
 
