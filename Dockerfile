@@ -1,4 +1,4 @@
-FROM golang:1.16.6 AS go-build
+FROM golang:1.16.6-alpine3.14 AS go-build
 
 WORKDIR /app
 COPY . .
@@ -15,7 +15,7 @@ RUN npm ci
 
 RUN npm run build
 
-FROM golang:1.16.6
+FROM golang:1.16.6-alpine3.14
 
 WORKDIR /app
 
