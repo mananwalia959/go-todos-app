@@ -25,5 +25,5 @@ COPY --from=node-build /app/build  client/build/
 
 EXPOSE 8080
 
-CMD ["main"]
+CMD ["./main"]
 
