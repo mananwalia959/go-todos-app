@@ -9,15 +9,15 @@ type UserRepository interface {
 	FindOrCreateUser(models.GoogleProfileInfo) (models.UserPrincipal, error)
 }
 
-type UserRepositoryImpl struct {
+type InMemoryUserRepositoryImpl struct {
 	userStore map[string]uuid.UUID
 }
 
-func InitializeUserRepository() UserRepository {
-	return &UserRepositoryImpl{userStore: map[string]uuid.UUID{}}
+func InitializeInMemoryUserRepository() UserRepository {
+	return &InMemoryUserRepositoryImpl{userStore: map[string]uuid.UUID{}}
 }
 
-func (repo *UserRepositoryImpl) FindOrCreateUser(googleProfile models.GoogleProfileInfo) (models.UserPrincipal, error) {
+func (repo *InMemoryUserRepositoryImpl) FindOrCreateUser(googleProfile models.GoogleProfileInfo) (models.UserPrincipal, error) {
 	userId, present := repo.userStore[googleProfile.Email]
 	if present {
 		return models.UserPrincipal{Id: userId,

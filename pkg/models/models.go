@@ -12,6 +12,7 @@ type Todo struct {
 	Description string    `json:"description"`
 	Completed   bool      `json:"completed"`
 	CreatedOn   time.Time `json:"-"`
+	CreatedBy   uuid.UUID `json:"-"`
 }
 
 type TodoCreateRequest struct {

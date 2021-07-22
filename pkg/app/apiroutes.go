@@ -16,10 +16,10 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 
 	apiRoutes.Use(middlewares.PanicRecovermiddleWare)
 
-	_ = repository.GetPool(&appconfig)
+	pool := repository.GetPool(&appconfig)
 
-	todoRepo := repository.InitializeTodoRepository()
-	userRepo := repository.InitializeUserRepository()
+	todoRepo := repository.InitializeInMemoryTodoRepository()
+	userRepo := repository.InitializePostgresUserRepository(pool)
 
 	jwtUtil := oauth.InitializeJwtUtil(&appconfig)
 

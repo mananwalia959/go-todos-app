@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 )
@@ -31,17 +32,48 @@ func GetPool(appconfig *config.Appconfig) *pgxpool.Pool {
 		log.Fatal("Can't connect to database , please check out your db settings")
 	}
 	log.Println("Postgres Pool Successfully Initilized")
+	err = migrate(pool)
+	if err != nil {
+		log.Fatal("Can't run migrations ")
+	}
+
+	log.Println("initial migrations successful")
+
 	return pool
 
 }
 
-// func addTypes(config *pgxpool.Config) {
-// 	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
-// 		conn.ConnInfo().RegisterDataType(pgtype.DataType{
-// 			Value: &uuid.UUID{},
-// 			Name:  "uuid",
-// 			OID:   pgtype.UUIDOID,
-// 		})
-// 		return nil
-// 	}
-// }
+//this needs to be idempotent as this will execute on start each time
+func migrate(pool *pgxpool.Pool) (err error) {
+	tx, err := pool.BeginTx(context.Background(), pgx.TxOptions{IsoLevel: pgx.Serializable})
+	if err != nil {
+		log.Println("Can't initiate transaction")
+		return err
+	}
+
+	_, err = tx.Exec(context.Background(), getQuery())
+
+	if err != nil {
+		//yuck , need a way to handle this more beautifully
+		//not sure
+		rollbackerr := tx.Rollback(context.Background())
+		if rollbackerr != nil {
+			log.Println(rollbackerr)
+		}
+
+		return err
+	}
+
+	return tx.Commit(context.Background())
+
+}
+
+func getQuery() string {
+	query := `CREATE TABLE IF NOT EXISTS users (
+		userid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	email TEXT,
+	UNIQUE(email)
+	);
+	`
+	return query
+}
