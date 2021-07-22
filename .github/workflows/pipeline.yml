@@ -44,6 +44,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: mananwalia959/go-todos-app:latest,mananwalia959/go-todos-app:${{ github.sha }}
+        tags: mananwalia959/go-todos-app:${{ github.sha }},mananwalia959/go-todos-app:latest
 
 
