@@ -16,7 +16,7 @@ type JWTUtil interface {
 	SignToken(models.UserPrincipal) (string, error)
 }
 
-func InitializeJwtUtil(appconfig config.Appconfig) JWTUtil {
+func InitializeJwtUtil(appconfig *config.Appconfig) JWTUtil {
 	return &JWTUtilImpl{secret: []byte(appconfig.SecretKeyJwt)}
 }
 

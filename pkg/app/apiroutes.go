@@ -16,13 +16,15 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 
 	apiRoutes.Use(middlewares.PanicRecovermiddleWare)
 
+	_ = repository.GetPool(&appconfig)
+
 	todoRepo := repository.InitializeTodoRepository()
 	userRepo := repository.InitializeUserRepository()
 
-	jwtUtil := oauth.InitializeJwtUtil(appconfig)
+	jwtUtil := oauth.InitializeJwtUtil(&appconfig)
 
 	todoHandler := handlers.InitialzeTodoHandlers(todoRepo)
-	authHandler := handlers.InitializeAuthHandlers(appconfig, userRepo, jwtUtil)
+	authHandler := handlers.InitializeAuthHandlers(&appconfig, userRepo, jwtUtil)
 
 	unProtectedRoutes := apiRoutes.NewRoute().Subrouter()
 

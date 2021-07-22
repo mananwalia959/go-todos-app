@@ -13,7 +13,7 @@ import (
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
 )
 
-func InitializeAuthHandlers(appconfig config.Appconfig, userRepository repository.UserRepository, jwtutil oauth.JWTUtil) AuthHandler {
+func InitializeAuthHandlers(appconfig *config.Appconfig, userRepository repository.UserRepository, jwtutil oauth.JWTUtil) AuthHandler {
 	return AuthHandler{
 		clientId:       appconfig.OauthClientId,
 		clientSecret:   appconfig.OauthClientSecret,

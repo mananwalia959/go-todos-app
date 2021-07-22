@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/mananwalia959/go-todos-app/pkg/app"
 	"github.com/mananwalia959/go-todos-app/pkg/config"
@@ -15,9 +15,10 @@ var port = ":8080"
 func main() {
 
 	config := getConfig()
+	log.Println("Starting application")
 	myRouter := app.GetApplication(config)
 
-	fmt.Println("Starting port on ", port)
+	log.Println("Starting on port", port)
 	err := http.ListenAndServe(port, myRouter)
 	// ListenAndServe will block the main goRoutine untill there is an error
 	log.Fatal(err)
@@ -25,25 +26,30 @@ func main() {
 }
 
 func getConfig() config.Appconfig {
-	clientID, clientidPresent := os.LookupEnv("OAUTH_CLIENT_ID_GOOGLE")
-	if !clientidPresent {
-		log.Fatal("exiting : client id is not present")
-	}
+	clientID := getEnv("OAUTH_CLIENT_ID_GOOGLE")
+	clientSecret := getEnv("OAUTH_CLIENT_SECRET_GOOGLE")
+	redirectUrl := getEnv("REDIRECT_URL")
+	secretKeyJwt := getEnv("SECRET_KEY_JWT")
+	postgresUrl := getEnv("POSTGRES_URL")
+	postgresDbName := getEnv("POSTGRES_DB_NAME")
+	postgresUserName := getEnv("POSTGRES_USERNAME")
+	postgresPassword := getEnv("POSTGRES_PASSWORD")
 
-	clientSecret, clientSecretPresent := os.LookupEnv("OAUTH_CLIENT_SECRET_GOOGLE")
-	if !clientSecretPresent {
-		log.Fatal("exiting : client secret is not present")
-	}
+	return config.Appconfig{
+		OauthClientId:     clientID,
+		OauthClientSecret: clientSecret,
+		OauthRedirectUrl:  redirectUrl,
+		SecretKeyJwt:      secretKeyJwt,
+		PostgresUrl:       postgresUrl,
+		PostgresUsername:  postgresUserName,
+		PostgresDbName:    postgresDbName,
+		PostgresPassword:  postgresPassword}
+}
 
-	redirectUrl, redirectUrlPresent := os.LookupEnv("REDIRECT_URL")
-	if !redirectUrlPresent {
-		log.Fatal("exiting : redirect url is not present")
+func getEnv(key string) string {
+	value, found := os.LookupEnv(key)
+	if !found {
+		log.Fatal("exiting : ", key, " is not present")
 	}
-
-	secretKeyJwt, secretKeyJwtPresent := os.LookupEnv("SECRET_KEY_JWT")
-	if !secretKeyJwtPresent {
-		log.Fatal("exiting : secretKeyJwt is not present")
-	}
-
-	return config.Appconfig{OauthClientId: clientID, OauthClientSecret: clientSecret, OauthRedirectUrl: redirectUrl, SecretKeyJwt: secretKeyJwt}
+	return strings.TrimSpace(value)
 }

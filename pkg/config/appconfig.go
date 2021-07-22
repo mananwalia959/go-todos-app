@@ -5,4 +5,8 @@ type Appconfig struct {
 	OauthClientSecret string
 	OauthRedirectUrl  string
 	SecretKeyJwt      string
+	PostgresUrl       string
+	PostgresDbName    string
+	PostgresUsername  string
+	PostgresPassword  string
 }
