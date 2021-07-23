@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"errors"
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,10 +9,10 @@ import (
 )
 
 type TodoRepository interface {
-	GetAllTodos() models.Todos
-	GetTodo(todoId uuid.UUID) (models.Todo, bool)
-	AddTodo(todo models.Todo) models.Todo
-	EditTodo(todo models.Todo) (models.Todo, error)
+	GetAllTodos(ctx context.Context) models.Todos
+	GetTodo(ctx context.Context, todoId uuid.UUID) (models.Todo, bool)
+	AddTodo(ctx context.Context, todo models.Todo) models.Todo
+	EditTodo(ctx context.Context, todo models.Todo) (models.Todo, bool)
 }
 
 type InMemoryTodoRepositoryImpl struct {
@@ -31,7 +31,7 @@ func InitializeInMemoryTodoRepository() TodoRepository {
 	return &localStorageTodoRepo
 }
 
-func (repo *InMemoryTodoRepositoryImpl) GetTodo(todoId uuid.UUID) (models.Todo, bool) {
+func (repo *InMemoryTodoRepositoryImpl) GetTodo(ctx context.Context, todoId uuid.UUID) (models.Todo, bool) {
 	for _, v := range repo.todos {
 		if v.Id == todoId {
 			return v, true
@@ -40,21 +40,26 @@ func (repo *InMemoryTodoRepositoryImpl) GetTodo(todoId uuid.UUID) (models.Todo, 
 	return models.Todo{}, false
 }
 
-func (repo *InMemoryTodoRepositoryImpl) GetAllTodos() models.Todos {
+func (repo *InMemoryTodoRepositoryImpl) GetAllTodos(ctx context.Context) models.Todos {
 	return repo.todos
 }
 
-func (repo *InMemoryTodoRepositoryImpl) EditTodo(todo models.Todo) (models.Todo, error) {
+/**
+* Returns models.todo , true if successful
+* empty models.todo , false if unsuccessful
+*
+ */
+func (repo *InMemoryTodoRepositoryImpl) EditTodo(ctx context.Context, todo models.Todo) (models.Todo, bool) {
 	for index, v := range repo.todos {
 		if v.Id == todo.Id {
 			repo.todos[index] = todo
-			return todo, nil
+			return todo, true
 		}
 	}
-	return models.Todo{}, errors.New("todo to be edited not found , make sure AddTodo was called before edit")
+	return models.Todo{}, false
 }
 
-func (repo *InMemoryTodoRepositoryImpl) AddTodo(todo models.Todo) models.Todo {
+func (repo *InMemoryTodoRepositoryImpl) AddTodo(ctx context.Context, todo models.Todo) models.Todo {
 	//prepend the todos at top of slice
 	repo.todos = append([]models.Todo{todo}, repo.todos...)
 	return todo

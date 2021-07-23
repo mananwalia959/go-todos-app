@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -21,7 +22,7 @@ type TodosHandler struct {
 }
 
 func (handler TodosHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
-	allTodos := handler.todoRepository.GetAllTodos()
+	allTodos := handler.todoRepository.GetAllTodos(context.TODO())
 	encodeToJson(w, 200, allTodos)
 }
 
@@ -36,7 +37,7 @@ func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	todo, found := handler.todoRepository.GetTodo(todoId)
+	todo, found := handler.todoRepository.GetTodo(context.TODO(), todoId)
 	if !found {
 		ErrorResponse(w, 404, "todo not found")
 		return
@@ -68,7 +69,7 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, found := handler.todoRepository.GetTodo(todoId)
+	todo, found := handler.todoRepository.GetTodo(context.TODO(), todoId)
 	if !found {
 		ErrorResponse(w, 404, "todo not found")
 		return
@@ -78,8 +79,8 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 	todo.Description = editRequest.Description
 	todo.Completed = editRequest.Completed
 
-	todo, err = handler.todoRepository.EditTodo(todo)
-	if err != nil {
+	todo, successful := handler.todoRepository.EditTodo(context.TODO(), todo)
+	if !successful {
 		ErrorResponse(w, 500, "Something went wrong")
 		return
 	}
@@ -105,7 +106,8 @@ func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		Description: createRequest.Description,
 		Completed:   false,
 		CreatedOn:   time.Now(),
+		CreatedBy:   GetUserPrincipal(r).Id,
 	}
-	savedTodo := handler.todoRepository.AddTodo(todo)
+	savedTodo := handler.todoRepository.AddTodo(context.TODO(), todo)
 	encodeToJson(w, 200, savedTodo)
 }

@@ -42,19 +42,6 @@ func createUserPrincipalFromToken(r *http.Request, jwtUtil oauth.JWTUtil) (model
 	return jwtUtil.VerifySign(token)
 }
 
-func GetUserPrincipal(r *http.Request) models.UserPrincipal {
-	var key models.UserPrincipalCtxKey = "UserPrincipal"
-	upi := r.Context().Value(key)
-	if upi == nil {
-		panic("empty userPrincipal ")
-	}
-	up, err := upi.(models.UserPrincipal)
-	if !err {
-		panic("can't cast to userPrincipal")
-	}
-	return up
-}
-
 func PanicRecovermiddleWare(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
