@@ -57,5 +57,3 @@ func PanicRecovermiddleWare(next http.Handler) http.Handler {
 	})
 
 }
-
-// (w http.ResponseWriter, r *http.Request) {

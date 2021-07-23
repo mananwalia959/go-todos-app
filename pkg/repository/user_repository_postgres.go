@@ -25,7 +25,7 @@ func (repo *UserRepositoryPostgresImpl) FindOrCreateUser(googleProfile models.Go
 		return models.UserPrincipal{}, err
 	}
 
-	//email is unique so no need to close rows as rows.Next() closes automatically on last row
+	defer rows.Close()
 	if rows.Next() {
 		userid := uuid.UUID{}
 		err = rows.Scan(&userid)

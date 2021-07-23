@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -11,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/mananwalia959/go-todos-app/pkg/models"
 	"github.com/mananwalia959/go-todos-app/pkg/repository"
+	"github.com/mananwalia959/go-todos-app/pkg/utils"
 )
 
 func InitialzeTodoHandlers(todorepo repository.TodoRepository) TodosHandler {
@@ -22,7 +22,7 @@ type TodosHandler struct {
 }
 
 func (handler TodosHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) {
-	allTodos := handler.todoRepository.GetAllTodos(context.TODO())
+	allTodos := handler.todoRepository.GetAllTodos(r.Context())
 	encodeToJson(w, 200, allTodos)
 }
 
@@ -37,7 +37,7 @@ func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	todo, found := handler.todoRepository.GetTodo(context.TODO(), todoId)
+	todo, found := handler.todoRepository.GetTodo(r.Context(), todoId)
 	if !found {
 		ErrorResponse(w, 404, "todo not found")
 		return
@@ -69,7 +69,7 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	todo, found := handler.todoRepository.GetTodo(context.TODO(), todoId)
+	todo, found := handler.todoRepository.GetTodo(r.Context(), todoId)
 	if !found {
 		ErrorResponse(w, 404, "todo not found")
 		return
@@ -79,7 +79,7 @@ func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
 	todo.Description = editRequest.Description
 	todo.Completed = editRequest.Completed
 
-	todo, successful := handler.todoRepository.EditTodo(context.TODO(), todo)
+	todo, successful := handler.todoRepository.EditTodo(r.Context(), todo)
 	if !successful {
 		ErrorResponse(w, 500, "Something went wrong")
 		return
@@ -106,8 +106,8 @@ func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 		Description: createRequest.Description,
 		Completed:   false,
 		CreatedOn:   time.Now(),
-		CreatedBy:   GetUserPrincipal(r).Id,
+		CreatedBy:   utils.GetUserPrincipal(r).Id,
 	}
-	savedTodo := handler.todoRepository.AddTodo(context.TODO(), todo)
+	savedTodo := handler.todoRepository.AddTodo(r.Context(), todo)
 	encodeToJson(w, 200, savedTodo)
 }

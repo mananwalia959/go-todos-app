@@ -18,7 +18,7 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 
 	pool := repository.GetPool(&appconfig)
 
-	todoRepo := repository.InitializeInMemoryTodoRepository()
+	todoRepo := repository.InitializePostgresTodoRepository(pool)
 	userRepo := repository.InitializePostgresUserRepository(pool)
 
 	jwtUtil := oauth.InitializeJwtUtil(&appconfig)
