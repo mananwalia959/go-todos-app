@@ -69,11 +69,28 @@ func migrate(pool *pgxpool.Pool) (err error) {
 }
 
 func getQuery() string {
-	query := `CREATE TABLE IF NOT EXISTS users (
-		userid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-	email TEXT,
-	UNIQUE(email)
+	query := `
+	CREATE TABLE IF NOT EXISTS users (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		email TEXT,
+		UNIQUE(email)
 	);
+
+	CREATE TABLE IF NOT EXISTS todos (
+		id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+		name TEXT,
+		description TEXT, 
+		completed BOOLEAN , 
+		created_on TIMESTAMP ,
+		created_by UUID, 
+		archived BOOLEAN DEFAULT FALSE,
+		CONSTRAINT fk_user
+			FOREIGN KEY(created_by) 
+				REFERENCES users(id) ON DELETE CASCADE
+
+	);
+
+	CREATE INDEX IF NOT EXISTS todos_created_by_idx ON todos( created_by );
 	`
 	return query
 }

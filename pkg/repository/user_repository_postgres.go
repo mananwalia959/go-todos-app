@@ -10,9 +10,7 @@ import (
 )
 
 func InitializePostgresUserRepository(pool *pgxpool.Pool) UserRepository {
-
 	return &UserRepositoryPostgresImpl{pool: pool}
-
 }
 
 type UserRepositoryPostgresImpl struct {
@@ -21,7 +19,7 @@ type UserRepositoryPostgresImpl struct {
 
 func (repo *UserRepositoryPostgresImpl) FindOrCreateUser(googleProfile models.GoogleProfileInfo) (models.UserPrincipal, error) {
 
-	rows, err := repo.pool.Query(context.Background(), "select userid from users where email = $1", googleProfile.Email)
+	rows, err := repo.pool.Query(context.Background(), "select id from users where email = $1", googleProfile.Email)
 	if err != nil {
 		log.Println(err)
 		return models.UserPrincipal{}, err
@@ -37,7 +35,7 @@ func (repo *UserRepositoryPostgresImpl) FindOrCreateUser(googleProfile models.Go
 		return getUserPrincipal(googleProfile, userid), nil
 	}
 	userid := uuid.UUID{}
-	err = repo.pool.QueryRow(context.Background(), "insert into users (email ) values ($1) returning userid", googleProfile.Email).Scan(&userid)
+	err = repo.pool.QueryRow(context.Background(), "insert into users (email ) values ($1) returning id", googleProfile.Email).Scan(&userid)
 	if err != nil {
 		return models.UserPrincipal{}, err
 	}
