@@ -35,7 +35,7 @@ const LoginCallback: FC<{ location: Location }> = (props) => {
 
             <Stack align="center">
                 <Square
-                    size="xs"
+                    size={['15em', 'sm']}
                     border="2px"
                     borderColor="teal"
                     borderRadius="40px"

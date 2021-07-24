@@ -11,7 +11,7 @@ const LoginPage = () => {
                 Please Login To Access your todos
             </Heading>
             <Square
-                size="xs"
+                size={['15em', 'sm']}
                 border="2px"
                 borderColor="teal"
                 borderRadius="40px"

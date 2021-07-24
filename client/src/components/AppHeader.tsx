@@ -10,7 +10,10 @@ function AppHeader() {
         <>
             <Flex p="2" background="teal">
                 <Container maxW="container.md">
-                    <Flex justifyContent={'space-between'}>
+                    <Flex
+                        direction={['column', 'row']}
+                        justifyContent={'space-between'}
+                    >
                         <Heading color="gray.100"> TODOS-APP </Heading>
 
                         {authContext.token ? <LogOutButton /> : ''}
