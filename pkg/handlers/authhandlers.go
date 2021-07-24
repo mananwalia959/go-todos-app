@@ -97,6 +97,23 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 	encodeToJson(w, 200, response)
 }
 
+func (authHandler AuthHandler) ValidateTokenTillNextDay(w http.ResponseWriter, r *http.Request) {
+	body := struct {
+		Token string `json:"jwtToken"`
+	}{}
+
+	json.NewDecoder(r.Body).Decode(&body)
+	token := body.Token
+
+	isValidTillNextDay := authHandler.jwtutil.ValidTillNextDay(token)
+	if !isValidTillNextDay {
+		ErrorResponse(w, 400, "Not a valid Token")
+		return
+	}
+	resp := struct{}{}
+	encodeToJson(w, 200, resp)
+}
+
 // Utilities
 func getProfileFromOauthApi(accessToken string, client *http.Client) (models.GoogleProfileInfo, error) {
 	url := "https://www.googleapis.com/oauth2/v1/userinfo"

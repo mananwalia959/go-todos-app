@@ -14,6 +14,7 @@ import (
 type JWTUtil interface {
 	VerifySign(string) (models.UserPrincipal, error)
 	SignToken(models.UserPrincipal) (string, error)
+	ValidTillNextDay(string) bool
 }
 
 func InitializeJwtUtil(appconfig *config.Appconfig) JWTUtil {
@@ -25,17 +26,7 @@ type JWTUtilImpl struct {
 }
 
 func (jwtUtilImpl *JWTUtilImpl) VerifySign(token string) (models.UserPrincipal, error) {
-	claims, err := jwt.HMACCheck([]byte(token), jwtUtilImpl.secret)
-	if err != nil {
-		return models.UserPrincipal{}, err
-	}
-
-	if claims.Valid(time.Now()) {
-		return parseClaimsForUserPrincipal(claims)
-
-	} else {
-		return models.UserPrincipal{}, errors.New("token not valid")
-	}
+	return tokenValidate(token, time.Now(), jwtUtilImpl.secret)
 
 }
 
@@ -56,6 +47,26 @@ func (jwtUtilImpl *JWTUtilImpl) SignToken(userprincipal models.UserPrincipal) (s
 	}
 	return string(tokenbytes), nil
 
+}
+
+func (jwtUtilImpl *JWTUtilImpl) ValidTillNextDay(token string) bool {
+	_, err := tokenValidate(token, time.Now().AddDate(0, 0, 1), jwtUtilImpl.secret)
+	return err == nil
+}
+
+func tokenValidate(token string, time time.Time, secret []byte) (models.UserPrincipal, error) {
+
+	claims, err := jwt.HMACCheck([]byte(token), secret)
+	if err != nil {
+		return models.UserPrincipal{}, err
+	}
+
+	if claims.Valid(time) {
+		return parseClaimsForUserPrincipal(claims)
+
+	} else {
+		return models.UserPrincipal{}, errors.New("token expired")
+	}
 }
 
 func parseClaimsForUserPrincipal(claims *jwt.Claims) (models.UserPrincipal, error) {

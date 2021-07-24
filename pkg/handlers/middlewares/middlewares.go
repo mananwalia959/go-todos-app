@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -48,6 +49,7 @@ func PanicRecovermiddleWare(next http.Handler) http.Handler {
 		defer func() {
 			err := recover()
 			if err != nil {
+				log.Println("error = ", err)
 				handlers.ErrorResponse(w, 500, "Something went wrong")
 			}
 		}()

@@ -30,6 +30,7 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 
 	unProtectedRoutes.Methods(http.MethodGet).Path("/auth/loginurl/google").HandlerFunc(authHandler.GetLoginUrl)
 	unProtectedRoutes.Methods(http.MethodPost).Path("/auth/token/google").HandlerFunc(authHandler.GetToken)
+	unProtectedRoutes.Methods(http.MethodPost).Path("/auth/validatetoken").HandlerFunc(authHandler.ValidateTokenTillNextDay)
 
 	protectedRoutes := apiRoutes.NewRoute().Subrouter()
 	protectedRoutes.Use(middlewares.GetAuthMiddleWare(jwtUtil))
@@ -38,6 +39,6 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 	protectedRoutes.Methods(http.MethodPost).Path("/todos").HandlerFunc(todoHandler.CreateTodo)
 	protectedRoutes.Methods(http.MethodGet).Path("/todos/{todoId}").HandlerFunc(todoHandler.GetSingleTodo)
 	protectedRoutes.Methods(http.MethodPut).Path("/todos/{todoId}").HandlerFunc(todoHandler.EditTodo)
-	protectedRoutes.NotFoundHandler = http.HandlerFunc(handlers.NotFoundHandler)
+	apiRoutes.PathPrefix("/").HandlerFunc(handlers.NotFoundHandler)
 
 }
