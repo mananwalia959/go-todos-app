@@ -29,8 +29,6 @@ function App() {
             setLoaded(true);
             return;
         }
-        console.log('here');
-
         authService
             .isTokenValidTillNextDay(tkn)
             .then(() => {
