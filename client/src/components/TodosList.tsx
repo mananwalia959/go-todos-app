@@ -11,6 +11,8 @@ function TodosList() {
     const [todos, setTodos] = useState([] as Todo[]);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+    const [isLoaded, setLoaded] = useState(false);
+
     const onNewTodo = (todo: Todo) => {
         const newTodosList = [todo, ...todos];
         setTodos(newTodosList);
@@ -19,7 +21,10 @@ function TodosList() {
     useEffect(() => {
         todoService
             .getAllTodos()
-            .then((t) => setTodos(t))
+            .then((t) => {
+                setTodos(t);
+                setLoaded(true);
+            })
             .catch((err) => console.log(err));
     }, []);
 
@@ -40,6 +45,8 @@ function TodosList() {
                     Add todo
                 </Button>
             </Flex>
+
+            {isLoaded && todos.length === 0 ? <EmptyComponent /> : ''}
             <Grid direction="column" gridAutoRows="1fr" gap="2" mt="2">
                 {todos.map((t) => (
                     <TodoComponent key={t.id} todo={t} />
@@ -48,5 +55,13 @@ function TodosList() {
         </>
     );
 }
+
+const EmptyComponent = () => (
+    <>
+        <Center padding={3}>
+            <Text>You have no todos , Click on Add todos</Text>
+        </Center>
+    </>
+);
 
 export default TodosList;
