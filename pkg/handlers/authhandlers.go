@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/models"
@@ -137,6 +138,10 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
+		log.Println(res.StatusCode)
+		buf := new(strings.Builder)
+		body := buf.String()
+		log.Println(body)
 		return models.GoogleProfileInfo{}, errors.New("could not get profile data")
 	}
 
