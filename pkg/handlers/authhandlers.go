@@ -126,9 +126,6 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 
 	method := http.MethodGet
 
-	// only for debugging temporrily , will be removed later
-	log.Println("token:", accessToken)
-
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return models.GoogleProfileInfo{}, err
@@ -141,10 +138,6 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
-		log.Println(res.StatusCode)
-		buf := new(strings.Builder)
-		body := buf.String()
-		log.Println(body)
 		return models.GoogleProfileInfo{}, errors.New("could not get profile data")
 	}
 
@@ -159,10 +152,13 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 
 func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqGoogle) (models.AccessTokenRespGoogle, error) {
 
+	log.Println("getting access token")
 	url := "https://oauth2.googleapis.com/token"
 	method := http.MethodPost
 
 	payload, err := json.Marshal(tokenReq)
+	log.Println(payload)
+
 	if err != nil {
 		return models.AccessTokenRespGoogle{}, err
 	}
@@ -178,6 +174,11 @@ func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqG
 		return models.AccessTokenRespGoogle{}, err
 	}
 	defer res.Body.Close()
+	log.Println(res.StatusCode)
+	buf := new(strings.Builder)
+	body := buf.String()
+	log.Println(body)
+	log.Print(res)
 
 	if res.StatusCode != http.StatusOK {
 		return models.AccessTokenRespGoogle{}, err
