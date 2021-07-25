@@ -126,6 +126,9 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 
 	method := http.MethodGet
 
+	// only for debugging temporrily , will be removed later
+	log.Println("token:", accessToken)
+
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return models.GoogleProfileInfo{}, err
