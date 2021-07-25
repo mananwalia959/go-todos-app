@@ -156,8 +156,12 @@ func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqG
 	url := "https://oauth2.googleapis.com/token"
 	method := http.MethodPost
 
+	log.Println(tokenReq.AuthCode)
+
+	log.Println(tokenReq)
+
 	payload, err := json.Marshal(tokenReq)
-	log.Println(payload)
+	// log.Println(payload)
 
 	if err != nil {
 		return models.AccessTokenRespGoogle{}, err
@@ -179,9 +183,10 @@ func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqG
 	body := buf.String()
 	log.Println(body)
 	log.Print(res)
+	log.Println(res.StatusCode != http.StatusOK)
 
 	if res.StatusCode != http.StatusOK {
-		return models.AccessTokenRespGoogle{}, err
+		return models.AccessTokenRespGoogle{}, errors.New("get token failed")
 	}
 
 	accessTokenReponse := models.AccessTokenRespGoogle{}
