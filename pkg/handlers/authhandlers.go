@@ -66,7 +66,7 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 		Client_id:     authHandler.clientId,
 		Client_secret: authHandler.clientSecret,
 		Grant_type:    "authorization_code",
-		Redirect_uri:  "http://localhost:3000/callback/googleoauth",
+		Redirect_uri:  authHandler.redirectUrl,
 		AuthCode:      Code,
 	}
 	accessTokenReponse, err := getAccessTokenFromCode(authHandler.client, accessTokenRequest)
