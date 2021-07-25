@@ -29,7 +29,7 @@ func GetPool(appconfig *config.Appconfig) *pgxpool.Pool {
 
 	pool, err := pgxpool.ConnectConfig(context.Background(), config)
 	if err != nil {
-		log.Fatal("Can't connect to database , please check out your db settings")
+		log.Fatal("Can't connect to database , please check out your db settings", err)
 	}
 	log.Println("Postgres Pool Successfully Initilized")
 	err = migrate(pool)
