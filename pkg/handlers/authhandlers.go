@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"net/url"
 
@@ -70,24 +71,28 @@ func (authHandler AuthHandler) GetToken(w http.ResponseWriter, r *http.Request) 
 	accessTokenReponse, err := getAccessTokenFromCode(authHandler.client, accessTokenRequest)
 
 	if err != nil {
+		logIfErr(err)
 		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	profile, err := getProfileFromOauthApi(accessTokenReponse.AccessToken, authHandler.client)
 	if err != nil {
+		logIfErr(err)
 		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	userprincipal, err := authHandler.userRepository.FindOrCreateUser(profile)
 	if err != nil {
+		logIfErr(err)
 		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
 
 	token, err := authHandler.jwtutil.SignToken(userprincipal)
 	if err != nil {
+		logIfErr(err)
 		ErrorResponse(w, 500, "something went wrong")
 		return
 	}
@@ -177,4 +182,10 @@ func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqG
 	}
 	return accessTokenReponse, nil
 
+}
+
+func logIfErr(err error) {
+	if err != nil {
+		log.Println(err)
+	}
 }
