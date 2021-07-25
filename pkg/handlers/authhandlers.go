@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/mananwalia959/go-todos-app/pkg/config"
 	"github.com/mananwalia959/go-todos-app/pkg/models"
@@ -152,16 +151,10 @@ func getProfileFromOauthApi(accessToken string, client *http.Client) (models.Goo
 
 func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqGoogle) (models.AccessTokenRespGoogle, error) {
 
-	log.Println("getting access token")
 	url := "https://oauth2.googleapis.com/token"
 	method := http.MethodPost
 
-	log.Println(tokenReq.AuthCode)
-
-	log.Println(tokenReq)
-
 	payload, err := json.Marshal(tokenReq)
-	// log.Println(payload)
 
 	if err != nil {
 		return models.AccessTokenRespGoogle{}, err
@@ -178,12 +171,6 @@ func getAccessTokenFromCode(client *http.Client, tokenReq models.AccessTokenReqG
 		return models.AccessTokenRespGoogle{}, err
 	}
 	defer res.Body.Close()
-	log.Println(res.StatusCode)
-	buf := new(strings.Builder)
-	body := buf.String()
-	log.Println(body)
-	log.Print(res)
-	log.Println(res.StatusCode != http.StatusOK)
 
 	if res.StatusCode != http.StatusOK {
 		return models.AccessTokenRespGoogle{}, errors.New("get token failed")
