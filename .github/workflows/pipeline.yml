@@ -56,6 +56,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [publish] # Only run this workflow when "publish" workflow succeeds
+    environment: 'production'
     steps:
     - uses: actions/checkout@v2
     - name: Deploy Docker App
