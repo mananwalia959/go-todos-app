@@ -55,8 +55,7 @@ jobs:
         
   deploy:
     runs-on: ubuntu-latest
-    # remove temporarily
-    #needs: [publishDockerArtifact] # Only run this workflow when "publishDockerArtifact" workflow succeeds
+    needs: [publishDockerArtifact] # Only run this workflow when "publishDockerArtifact" workflow succeeds
     environment: 'production'
     steps:
     - name: Deploy Publish Artifact
@@ -68,6 +67,6 @@ jobs:
         script_stop: true
         script: | 
           docker container rm -f todo || true
-          echo "I am Here 1"
+          docker image prune -a -f
           echo "I am Here 2"
 
