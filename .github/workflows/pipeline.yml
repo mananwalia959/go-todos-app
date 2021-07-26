@@ -58,9 +58,13 @@ jobs:
     needs: [publishDockerArtifact] # Only run this workflow when "publishDockerArtifact" workflow succeeds
     environment: 'production'
     steps:
-    - uses: actions/checkout@v2
-    - name: Deploy Docker App
-      run: echo "Placeholder step"
-
-
+    - name: Deploy Publish Artifact
+      uses: appleboy/ssh-action@1a8b3784eaa665f677fa114edd5683bb6a6bfaa8
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+        script: | 
+          echo "I am Here 1"
+          echo "I am Here 2"
 
