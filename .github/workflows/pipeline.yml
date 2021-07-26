@@ -68,6 +68,16 @@ jobs:
         script: | 
           docker container rm -f todo || true
           docker image prune -a -f
-          docker run -d --name todo --add-host=host.docker.internal:host-gateway  -p 8080:8080  -e OAUTH_CLIENT_ID_GOOGLE=${{ secrets.OAUTH_CLIENT_ID_GOOGLE }} -e  OAUTH_CLIENT_SECRET_GOOGLE=${{ secrets.OAUTH_CLIENT_SECRET_GOOGLE }} -e REDIRECT_URL=https://www.todos.mananw.com/callback/googleoauth -e SECRET_KEY_JWT=${{ secrets.SECRET_KEY_JWT }}  -e POSTGRES_URL=${{ secrets.POSTGRES_URL }} -e POSTGRES_DB_NAME=${{ secrets.POSTGRES_DB_NAME }} -e POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }} -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}  mananwalia959/go-todos-app:e36940d757642ae22efbe4d9b03177e343514cfd
+          docker run -d --name todo --add-host=host.docker.internal:host-gateway \ 
+            -p 8080:8080   \ 
+            -e OAUTH_CLIENT_ID_GOOGLE=${{ secrets.OAUTH_CLIENT_ID_GOOGLE }}  \ 
+            -e  OAUTH_CLIENT_SECRET_GOOGLE=${{ secrets.OAUTH_CLIENT_SECRET_GOOGLE }}  \ 
+            -e REDIRECT_URL=https://www.todos.mananw.com/callback/googleoauth  \ 
+            -e SECRET_KEY_JWT=${{ secrets.SECRET_KEY_JWT }}   \ 
+            -e POSTGRES_URL=${{ secrets.POSTGRES_URL }}  \ 
+            -e POSTGRES_DB_NAME=${{ secrets.POSTGRES_DB_NAME }}  \ 
+            -e POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}  \ 
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}   \ 
+            mananwalia959/go-todos-app:e36940d757642ae22efbe4d9b03177e343514cfd
 
 
