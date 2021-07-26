@@ -67,7 +67,7 @@ jobs:
         key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
         script_stop: true
         script: | 
-          docker stop todo || true
+          docker container rm -f todo || true
           echo "I am Here 1"
           echo "I am Here 2"
 
