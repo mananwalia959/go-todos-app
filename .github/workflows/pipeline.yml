@@ -78,6 +78,6 @@ jobs:
             -e POSTGRES_DB_NAME=${{ secrets.POSTGRES_DB_NAME }}  \ 
             -e POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}  \ 
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}   \ 
-            mananwalia959/go-todos-app:e36940d757642ae22efbe4d9b03177e343514cfd
+            mananwalia959/go-todos-app:${{ github.sha }}
 
 
