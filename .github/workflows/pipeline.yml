@@ -58,7 +58,7 @@ jobs:
     needs: [publish] # Only run this workflow when "publish" workflow succeeds
     steps:
     - uses: actions/checkout@v2
-    - name: Build Golang App
+    - name: Deploy Docker App
       run: echo "Placeholder step"
 
 
