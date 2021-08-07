@@ -27,13 +27,9 @@ func (handler TodosHandler) GetAllTodos(w http.ResponseWriter, r *http.Request) 
 }
 
 func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
-	todoString := vars["todoId"]
-
-	todoId, err := uuid.Parse(todoString)
+	todoId, err := getTodoId(r)
 	if err != nil {
-		ErrorResponse(w, 400, "please enter valid uuid")
+		ErrorResponse(w, 400, "please enter valid todoId")
 		return
 	}
 
@@ -46,14 +42,31 @@ func (handler TodosHandler) GetSingleTodo(w http.ResponseWriter, r *http.Request
 
 }
 
-func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-
-	todoString := vars["todoId"]
-
-	todoId, err := uuid.Parse(todoString)
+func (handler TodosHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	todoId, err := getTodoId(r)
 	if err != nil {
-		ErrorResponse(w, 400, "please enter valid uuid")
+		ErrorResponse(w, 400, "please enter valid todoId")
+		return
+	}
+	todo, found := handler.todoRepository.GetTodo(r.Context(), todoId)
+	if !found {
+		ErrorResponse(w, 404, "todo not found")
+		return
+	}
+	result := handler.todoRepository.DeleteTodo(r.Context(), todo)
+	if !result {
+		ErrorResponse(w, 404, "Something went wrong")
+		return
+	}
+	//empty response
+	resp := struct{}{}
+	encodeToJson(w, 204, resp)
+}
+
+func (handler TodosHandler) EditTodo(w http.ResponseWriter, r *http.Request) {
+	todoId, err := getTodoId(r)
+	if err != nil {
+		ErrorResponse(w, 400, "please enter valid todoId")
 		return
 	}
 
@@ -110,4 +123,11 @@ func (handler TodosHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	savedTodo := handler.todoRepository.AddTodo(r.Context(), todo)
 	encodeToJson(w, 200, savedTodo)
+}
+
+func getTodoId(r *http.Request) (uuid.UUID, error) {
+	vars := mux.Vars(r)
+	todoString := vars["todoId"]
+	todoId, err := uuid.Parse(todoString)
+	return todoId, err
 }

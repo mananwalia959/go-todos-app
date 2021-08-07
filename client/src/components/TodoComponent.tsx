@@ -8,12 +8,24 @@ import TodoModalDialog from './TodoModalDialog';
 import { EditIcon } from './svg/EditIcon';
 import { todoService } from '../services/todos-service';
 import { TodoEditRequest } from '../models/TodoEditRequest';
+import { DeleteIcon } from './svg/DeleteIcon';
 
-const TodoComponent: FC<{ todo: Todo }> = (props) => {
+const TodoComponent: FC<{
+    todo: Todo;
+    deleteTodo: (todoId: string) => void;
+}> = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [todo, setTodo] = useState(props.todo);
     const editTodo = (newTodo: Todo) => {
         setTodo({ ...newTodo });
+    };
+
+    const deleteTodo = props.deleteTodo;
+
+    const onDelete = async () => {
+        const todoId = todo.id;
+        await todoService.deleteTodo(todoId);
+        deleteTodo(todoId);
     };
 
     const onCheckbox = async (isChecked: boolean) => {
@@ -51,7 +63,7 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                         <Checkbox
                             colorScheme="teal"
                             size="lg"
-                            mx="2"
+                            mx="4"
                             borderColor="teal"
                             isChecked={todo.completed}
                             onChange={(e) => onCheckbox(e.target.checked)}
@@ -64,6 +76,15 @@ const TodoComponent: FC<{ todo: Todo }> = (props) => {
                             aria-label="Edit Todo"
                             size="lg"
                             icon={<EditIcon />}
+                        />
+
+                        <IconButton
+                            onClick={onDelete}
+                            variant="link"
+                            colorScheme="teal"
+                            aria-label="Delete Todo"
+                            size="lg"
+                            icon={<DeleteIcon />}
                         />
                     </Flex>
                 </Flex>

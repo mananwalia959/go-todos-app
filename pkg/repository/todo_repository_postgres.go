@@ -45,7 +45,6 @@ func (repo *TodoRepositoryPostgresImpl) GetAllTodos(ctx context.Context) models.
 	rows, err := repo.pool.Query(ctx, query, up.Id)
 	panicIfNotNil(err)
 	defer rows.Close()
-	//initialize to 8 by default (need more metrics to caliberate)
 	todos := models.Todos{}
 	for rows.Next() {
 		todo := readRow(rows)
@@ -67,6 +66,14 @@ func (repo *TodoRepositoryPostgresImpl) EditTodo(ctx context.Context, todo model
 	res, err := repo.pool.Exec(ctx, query, todo.Name, todo.Description, todo.Completed, todo.Id)
 	panicIfNotNil(err)
 	return todo, res.RowsAffected() > 0
+}
+
+func (repo *TodoRepositoryPostgresImpl) DeleteTodo(ctx context.Context, todo models.Todo) bool {
+	query := "delete from todos where id = $1 "
+
+	res, err := repo.pool.Exec(ctx, query, todo.Id)
+	panicIfNotNil(err)
+	return res.RowsAffected() > 0
 }
 
 func panicIfNotNil(err error) {

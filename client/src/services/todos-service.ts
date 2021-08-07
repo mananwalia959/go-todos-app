@@ -8,6 +8,7 @@ interface TodosService{
     getAllTodos(): Promise<Todo[]>
     saveNewTodo(todoCreateRequest : TodoCreateRequest): Promise<Todo>
     editTodo(todoId:string,todoEditRequest : TodoEditRequest):Promise<Todo>
+    deleteTodo(todoId : string) : Promise<void>
 }
 
 class TodosServiceImpl implements TodosService{
@@ -19,6 +20,10 @@ class TodosServiceImpl implements TodosService{
     }
     editTodo(todoId :string ,todoEditRequest: TodoEditRequest): Promise<Todo> {
         return ProtectedAxios.put<Todo>(`/api/todos/${todoId}`,todoEditRequest).then(resp => resp.data);
+    }
+
+    deleteTodo(todoId : string) : Promise<void> {
+        return ProtectedAxios.delete<void>(`/api/todos/${todoId}`).then();
     }
 }
 

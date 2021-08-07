@@ -39,6 +39,7 @@ func setApiRoutes(apiRoutes *mux.Router, appconfig config.Appconfig) {
 	protectedRoutes.Methods(http.MethodPost).Path("/todos").HandlerFunc(todoHandler.CreateTodo)
 	protectedRoutes.Methods(http.MethodGet).Path("/todos/{todoId}").HandlerFunc(todoHandler.GetSingleTodo)
 	protectedRoutes.Methods(http.MethodPut).Path("/todos/{todoId}").HandlerFunc(todoHandler.EditTodo)
+	protectedRoutes.Methods(http.MethodDelete).Path("/todos/{todoId}").HandlerFunc(todoHandler.DeleteTodo)
 	apiRoutes.PathPrefix("/").HandlerFunc(handlers.NotFoundHandler)
 
 }

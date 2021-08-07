@@ -18,6 +18,11 @@ function TodosList() {
         setTodos(newTodosList);
     };
 
+    const deleteTodo = (todoId: string) => {
+        const newTodos = todos.filter((t) => t.id !== todoId);
+        setTodos(newTodos);
+    };
+
     useEffect(() => {
         todoService
             .getAllTodos()
@@ -49,7 +54,11 @@ function TodosList() {
             {isLoaded && todos.length === 0 ? <EmptyComponent /> : ''}
             <Grid direction="column" gridAutoRows="1fr" gap="2" mt="2">
                 {todos.map((t) => (
-                    <TodoComponent key={t.id} todo={t} />
+                    <TodoComponent
+                        key={t.id}
+                        todo={t}
+                        deleteTodo={deleteTodo}
+                    />
                 ))}
             </Grid>
         </>

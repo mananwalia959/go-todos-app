@@ -12,4 +12,5 @@ type TodoRepository interface {
 	GetTodo(ctx context.Context, todoId uuid.UUID) (models.Todo, bool)
 	AddTodo(ctx context.Context, todo models.Todo) models.Todo
 	EditTodo(ctx context.Context, todo models.Todo) (models.Todo, bool)
+	DeleteTodo(ctx context.Context, todo models.Todo) bool
 }
