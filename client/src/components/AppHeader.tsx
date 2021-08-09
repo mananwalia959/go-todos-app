@@ -14,7 +14,7 @@ function AppHeader() {
                         direction={['column', 'row']}
                         justifyContent={'space-between'}
                     >
-                        <Heading color="gray.100"> TODOS-APP </Heading>
+                        <Heading color="gray.100"> TODOS </Heading>
 
                         {authContext.token ? <LogOutButton /> : ''}
                     </Flex>
