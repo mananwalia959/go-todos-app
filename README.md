@@ -12,7 +12,7 @@ the images are published on commit at [mananwalia959/go-todos-app](https://hub.d
 
 |Name| Pipeline|
 | --- | --- |
-|Build|[![go-todos-app](https://github.com/mananwalia959/go-todos-app/actions/workflows/pipeline.yml/badge.svg)](https://github.com/mananwalia959/go-todos-app/actions/workflows/pipeline.yml)|
+|Build and Deploy|[![go-todos-app](https://github.com/mananwalia959/go-todos-app/actions/workflows/pipeline.yml/badge.svg)](https://github.com/mananwalia959/go-todos-app/actions/workflows/pipeline.yml)|
 
 ## Required Env variables
 |ENV VARIABLE NAME | WHERE TO GET IT | PURPOSE |
