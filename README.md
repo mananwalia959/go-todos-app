@@ -6,7 +6,7 @@ Sample Todo Web App for Golang and React
 
 ## Dockerhub Repo
 
-the images are published on commit at [mananwalia959/go-todos-app](https://hub.docker.com/repository/docker/mananwalia959/go-todos-app)
+the images are published on commit at [mananwalia959/go-todos-app](https://hub.docker.com/r/mananwalia959/go-todos-app)
 
 ## Pipelines
 
