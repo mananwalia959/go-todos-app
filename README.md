@@ -4,6 +4,8 @@
 
 Sample Todo Web App for Golang and React
 
+## Live URL
+An instance of the application is deployed at https://todos.mananw.com/ 
 ## Dockerhub Repo
 
 the images are published on commit at [mananwalia959/go-todos-app](https://hub.docker.com/r/mananwalia959/go-todos-app)
